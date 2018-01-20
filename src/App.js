@@ -1,18 +1,41 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Search from './search/Search';
 import './App.css';
+import commonData from './common';
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.getStock = this.getStock.bind(this);
+
+    this.state = {
+      stocks: ''
+    };
+  }
+
+  getStock(symbol) {
+    console.log(`symbol is ${symbol}`);
+    const url = commonData.baseUrl + "stocks";
+
+    fetch(url).then((response) => {
+      return response.json();
+    }).then((data) => {    
+       this.setState(prevState => ({
+         stocks: [...prevState.stocks, data]
+       }));
+    }).catch((error) => {
+      console.log(error);
+    });
+
+  }
+
+
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <Search getStock={this.getStock} />
       </div>
     );
   }
